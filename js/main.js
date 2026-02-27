@@ -1,6 +1,6 @@
 /* ============================================
    PORTFOLIO — Aapo Latvala
-   Interactions & theme management
+   Minimal JavaScript for interactivity
    ============================================ */
 
 (function () {
@@ -32,6 +32,7 @@
     setTheme(current === 'dark' ? 'light' : 'dark');
   });
 
+  // Listen for OS theme changes
   prefersDark.addEventListener('change', function (e) {
     if (!getStoredTheme()) {
       setTheme(e.matches ? 'dark' : 'light');
@@ -48,7 +49,7 @@
     navMenu.classList.toggle('is-open');
   });
 
-  // Close mobile nav on link click
+  // Close mobile nav when a link is clicked
   navMenu.querySelectorAll('a').forEach(function (link) {
     link.addEventListener('click', function () {
       navToggle.setAttribute('aria-expanded', 'false');
@@ -57,16 +58,16 @@
   });
 
   // ---------- Active nav link on scroll ----------
-  var sections = document.querySelectorAll('section[id]');
-  var navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
 
   function setActiveLink() {
-    var scrollY = window.scrollY + 120;
+    const scrollY = window.scrollY + 100;
 
     sections.forEach(function (section) {
-      var sectionTop = section.offsetTop;
-      var sectionHeight = section.offsetHeight;
-      var sectionId = section.getAttribute('id');
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      const sectionId = section.getAttribute('id');
 
       if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
         navLinks.forEach(function (link) {
@@ -79,7 +80,8 @@
     });
   }
 
-  var ticking = false;
+  // Throttle scroll handler for performance
+  let ticking = false;
   window.addEventListener('scroll', function () {
     if (!ticking) {
       window.requestAnimationFrame(function () {
@@ -90,17 +92,18 @@
     }
   });
 
+  // Set initial active link
   setActiveLink();
 
   // ---------- Intersection Observer for fade-in ----------
   if ('IntersectionObserver' in window) {
-    var observerOptions = {
+    const observerOptions = {
       root: null,
-      rootMargin: '0px 0px -80px 0px',
-      threshold: 0.08
+      rootMargin: '0px 0px -60px 0px',
+      threshold: 0.1
     };
 
-    var observer = new IntersectionObserver(function (entries) {
+    const observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
@@ -109,18 +112,8 @@
       });
     }, observerOptions);
 
-    // Observe all cards and sections
-    var selectors = [
-      '.service-card',
-      '.event-card',
-      '.project-card',
-      '.stat-card',
-      '.approach-card',
-      '.skills-column',
-      '.cert-list li'
-    ].join(', ');
-
-    document.querySelectorAll(selectors).forEach(function (el) {
+    // Observe cards and timeline items
+    document.querySelectorAll('.pillar-card, .project-card, .timeline-item, .highlight-card, .skills-group').forEach(function (el) {
       el.classList.add('fade-in');
       observer.observe(el);
     });
